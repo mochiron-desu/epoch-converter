@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epoch Time Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">
+            <i class="fas fa-clock mr-2"></i>Epoch Time Converter
+        </h1>
+        
+        <div class="space-y-4">
+            <!-- Epoch to Human Readable -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h2 class="text-xl font-semibold text-gray-700 mb-3">Epoch to Readable</h2>
+                <input 
+                    type="number" 
+                    id="epochInput" 
+                    placeholder="Enter Epoch Timestamp" 
+                    class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                >
+                <div 
+                    id="readableOutput" 
+                    class="mt-2 p-2 bg-white border rounded text-gray-600"
+                >
+                    Converted time will appear here
+                </div>
+            </div>
+
+            <!-- Human Readable to Epoch -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h2 class="text-xl font-semibold text-gray-700 mb-3">Readable to Epoch</h2>
+                <input 
+                    type="datetime-local" 
+                    id="dateInput" 
+                    class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                >
+                <div 
+                    id="epochOutput" 
+                    class="mt-2 p-2 bg-white border rounded text-gray-600"
+                >
+                    Converted epoch will appear here
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 text-center">
+            <button 
+                id="copyEpoch" 
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition mr-2"
+            >
+                <i class="fas fa-copy mr-2"></i>Copy Epoch
+            </button>
+            <button 
+                id="copyReadable" 
+                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+            >
+                <i class="fas fa-copy mr-2"></i>Copy Readable
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const epochInput = document.getElementById('epochInput');
+            const dateInput = document.getElementById('dateInput');
+            const readableOutput = document.getElementById('readableOutput');
+            const epochOutput = document.getElementById('epochOutput');
+            const copyEpochBtn = document.getElementById('copyEpoch');
+            const copyReadableBtn = document.getElementById('copyReadable');
+
+            // Epoch to Readable Conversion
+            epochInput.addEventListener('input', () => {
+                const timestamp = parseInt(epochInput.value);
+                if (!isNaN(timestamp)) {
+                    const date = new Date(timestamp * 1000);
+                    readableOutput.textContent = date.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        timeZoneName: 'short'
+                    });
+                } else {
+                    readableOutput.textContent = 'Invalid Epoch Timestamp';
+                }
+            });
+
+            // Readable to Epoch Conversion
+            dateInput.addEventListener('change', () => {
+                const selectedDate = new Date(dateInput.value);
+                const epochTime = Math.floor(selectedDate.getTime() / 1000);
+                epochOutput.textContent = epochTime;
+            });
+
+            // Copy Functionality
+            copyEpochBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(epochOutput.textContent)
+                    .then(() => {
+                        copyEpochBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+                        setTimeout(() => {
+                            copyEpochBtn.innerHTML = '<i class="fas fa-copy mr-2"></i>Copy Epoch';
+                        }, 2000);
+                    });
+            });
+
+            copyReadableBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(readableOutput.textContent)
+                    .then(() => {
+                        copyReadableBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+                        setTimeout(() => {
+                            copyReadableBtn.innerHTML = '<i class="fas fa-copy mr-2"></i>Copy Readable';
+                        }, 2000);
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
