@@ -14,37 +14,23 @@
         </h1>
         
         <div class="space-y-4">
-            <!-- Epoch to Human Readable -->
             <div class="bg-gray-50 p-4 rounded-lg">
-                <h2 class="text-xl font-semibold text-gray-700 mb-3">Epoch to Readable</h2>
+                <h2 class="text-xl font-semibold text-gray-700 mb-3">Epoch Timestamp</h2>
                 <input 
                     type="number" 
                     id="epochInput" 
                     placeholder="Enter Epoch Timestamp" 
                     class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 >
-                <div 
-                    id="readableOutput" 
-                    class="mt-2 p-2 bg-white border rounded text-gray-600"
-                >
-                    Converted time will appear here
-                </div>
             </div>
 
-            <!-- Human Readable to Epoch -->
             <div class="bg-gray-50 p-4 rounded-lg">
-                <h2 class="text-xl font-semibold text-gray-700 mb-3">Readable to Epoch</h2>
+                <h2 class="text-xl font-semibold text-gray-700 mb-3">Human Readable Date</h2>
                 <input 
                     type="datetime-local" 
                     id="dateInput" 
                     class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 >
-                <div 
-                    id="epochOutput" 
-                    class="mt-2 p-2 bg-white border rounded text-gray-600"
-                >
-                    Converted epoch will appear here
-                </div>
             </div>
         </div>
 
@@ -63,45 +49,45 @@
             </button>
         </div>
     </div>
+  
+      <a href="https://github.com/mochiron-desu/epoch-converter" style="position: fixed; bottom: 10px; right: 10px;">
+        <img src="https://img.shields.io/badge/GitHub-Visit%20Repository-blue?logo=github" alt="GitHub Badge">
+    </a>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const epochInput = document.getElementById('epochInput');
             const dateInput = document.getElementById('dateInput');
-            const readableOutput = document.getElementById('readableOutput');
-            const epochOutput = document.getElementById('epochOutput');
             const copyEpochBtn = document.getElementById('copyEpoch');
             const copyReadableBtn = document.getElementById('copyReadable');
+
+            const updateDateInput = (timestamp) => {
+                const date = new Date(timestamp * 1000);
+                dateInput.value = date.toISOString().slice(0, 16);
+            };
+
+            const updateEpochInput = (date) => {
+                const epochTime = Math.floor(date.getTime() / 1000);
+                epochInput.value = epochTime;
+            };
 
             // Epoch to Readable Conversion
             epochInput.addEventListener('input', () => {
                 const timestamp = parseInt(epochInput.value);
                 if (!isNaN(timestamp)) {
-                    const date = new Date(timestamp * 1000);
-                    readableOutput.textContent = date.toLocaleString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        timeZoneName: 'short'
-                    });
-                } else {
-                    readableOutput.textContent = 'Invalid Epoch Timestamp';
+                    updateDateInput(timestamp);
                 }
             });
 
             // Readable to Epoch Conversion
             dateInput.addEventListener('change', () => {
                 const selectedDate = new Date(dateInput.value);
-                const epochTime = Math.floor(selectedDate.getTime() / 1000);
-                epochOutput.textContent = epochTime;
+                updateEpochInput(selectedDate);
             });
 
             // Copy Functionality
             copyEpochBtn.addEventListener('click', () => {
-                navigator.clipboard.writeText(epochOutput.textContent)
+                navigator.clipboard.writeText(epochInput.value)
                     .then(() => {
                         copyEpochBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
                         setTimeout(() => {
@@ -111,7 +97,7 @@
             });
 
             copyReadableBtn.addEventListener('click', () => {
-                navigator.clipboard.writeText(readableOutput.textContent)
+                navigator.clipboard.writeText(dateInput.value)
                     .then(() => {
                         copyReadableBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
                         setTimeout(() => {
